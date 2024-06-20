@@ -2,9 +2,7 @@ class UsersController < ApplicationController
   def index
     if params[:search]
       @users = User.where('username LIKE ?', "%#{params[:search]}%")
-      if @users.empty?
-        flash.now[:alert] = "Kullanıcı Bulunamadı!"
-      end
+      flash.now[:alert] = "Kullanıcı Bulunamadı!" if @users.empty?
     else
       @users = User.all
     end
@@ -12,7 +10,6 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    @photo = @user.user_photo
     @albums = fetch_albums(@user.id)
   end
 
@@ -23,7 +20,7 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
     if @user.update(user_params)
-      redirect_to @user, notice: 'Kullanıcı başarıyla güncellendi.'
+      redirect_to @user, notice: 'User was successfully updated.'
     else
       render :edit
     end
@@ -35,11 +32,9 @@ class UsersController < ApplicationController
     params.require(:user).permit(:name, :username, :email, :phone, :website)
   end
 
-
   def fetch_albums(user_id)
     url = "https://jsonplaceholder.typicode.com/albums?userId=#{user_id}"
-    uri = URI(url)
-    response = Net::HTTP.get(uri)
+    response = Net::HTTP.get(URI(url))
     JSON.parse(response)
   end
 end

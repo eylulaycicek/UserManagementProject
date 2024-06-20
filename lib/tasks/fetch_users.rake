@@ -44,7 +44,6 @@ namespace :fetch do
           user.address = address
         end
       end
-      
       puts "Users fetched and saved to database successfully!"
     end
   end

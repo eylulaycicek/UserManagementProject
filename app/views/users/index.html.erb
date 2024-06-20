@@ -1,23 +1,37 @@
-<h1>Kullanıcılar</h1>
 
-<%= form_with url: users_path, method: :get, local: true do %>
-  <div>
-    <%= label_tag :search, "Kullanıcı Ara:" %>
-    <%= text_field_tag :search, params[:search] %>
-    <%= submit_tag "Ara" %>
-    <%= link_to 'Temizle', users_path, class: 'button' %>
-  </div>
+<% content_for :head do %>
+  <%= stylesheet_link_tag 'users/index', media: 'all' %>
 <% end %>
 
-<% if flash.now[:alert] %>
-  <p><%= flash.now[:alert] %></p>
-<% end %>
-
-
-<ul>
-  <% @users.each do |user| %>
-    <li>    
-      <p><%= user.username %></p>
-    </li>
+  <section> 
+  <h1>USERS</h1>
+  <%= form_with url: users_path, method: :get, local: true, class: "form-inline my-2 my-lg-0" do %>
+    <div class="form-group mb-2">
+      <%= label_tag :search, "SEARCH BY USERNAME:", class: "sr-only" %>
+      <%= text_field_tag :search, params[:search], class: "form-control" %>
+    </div>
+    <%= submit_tag "SEARCH", class: "btn btn-primary mb-2" %>
+    <%= link_to 'CLEAR', users_path, class: 'btn btn-secondary mb-2' %>
   <% end %>
-</ul>
+  
+  <% if flash.now[:alert] %>
+    <div class="alert alert-warning my-2" role="alert">
+      <%= flash.now[:alert] %>
+    </div>
+  <% end %>
+
+  <ul class="list-group mt-4">
+    <% @users.each do |user| %>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <img src="<%= user.photo_url %>" alt="user photo" class="img-thumbnail rounded-circle mr-3" style="width: 50px; height: 50px;">
+          <div>
+            <p class="mb-0"><%= user.name %></p>
+            <small class="text-muted"><%= user.username %></small>
+          </div>
+        </div>
+        <%= link_to 'Edit', edit_user_path(user), class: 'btn btn-warning btn-sm' %>
+      </li>
+    <% end %>
+  </ul>
+</section>
