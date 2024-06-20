@@ -1,2 +1,13 @@
-<h1>Albums#show</h1>
-<p>Find me in app/views/albums/show.html.erb</p>
+<h1><%= @album['title'] %></h1>
+<p>Albüm Detayları:</p>
+
+<ul>
+  <% @photos.each do |photo| %>
+    <li>
+      <img src="<%= photo['thumbnailUrl'] %>" alt="<%= photo['title'] %>">
+      <p><%= photo['title'] %></p>
+    </li>
+  <% end %>
+</ul>
+
+<%= link_to 'Geri', user_path(@album['userId']) %>

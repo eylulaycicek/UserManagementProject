@@ -1,2 +1,23 @@
-<h1>Users#index</h1>
-<p>Find me in app/views/users/index.html.erb</p>
+<h1>Kullanıcılar</h1>
+
+<%= form_with url: users_path, method: :get, local: true do %>
+  <div>
+    <%= label_tag :search, "Kullanıcı Ara:" %>
+    <%= text_field_tag :search, params[:search] %>
+    <%= submit_tag "Ara" %>
+    <%= link_to 'Temizle', users_path, class: 'button' %>
+  </div>
+<% end %>
+
+<% if flash.now[:alert] %>
+  <p><%= flash.now[:alert] %></p>
+<% end %>
+
+
+<ul>
+  <% @users.each do |user| %>
+    <li>    
+      <p><%= user.username %></p>
+    </li>
+  <% end %>
+</ul>
