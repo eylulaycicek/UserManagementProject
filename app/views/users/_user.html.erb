@@ -1,0 +1,17 @@
+<%= turbo_frame_tag dom_id(user) do %>
+  <div class="card mb-3">
+    <div class="card-body text-center">
+      <%= image_tag 'https://via.placeholder.com/150', class: 'rounded-circle mb-3', alt: 'user photo', size: "150x150" %>
+      <h5 class="card-title"><%= user.name %></h5>
+      <h6 class="card-subtitle mb-2 text-muted">@<%= user.username %></h6>
+      <p class="card-text">
+        <strong>Email:</strong> <%= user.email %><br>
+        <strong>Phone:</strong> <%= user.phone %><br>
+        <strong>Address:</strong> Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+      </p>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal">
+        Edit
+      </button>
+    </div>
+  </div>
+<% end %>

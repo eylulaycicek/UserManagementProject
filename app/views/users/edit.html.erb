@@ -1,2 +1,66 @@
-<h1>Users#edit</h1>
-<p>Find me in app/views/users/edit.html.erb</p>
+<h1>USER PROFILE</h1>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="">
+        <div class="card-body text-center">
+          <%= turbo_frame_tag dom_id(@user) do %>
+            <%= render 'user', user: @user %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <h2>Albums</h2>
+      <div class="list-group">
+        <% @albums.each do |album| %>
+          <a href="#albumModal" data-bs-toggle="modal" data-bs-target="#albumModal-<%= album.id %>" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 align-items-center">
+              <img src="<%= album.photos.first&.thumbnail_url %>" class="img-thumbnail me-3" alt="album photo" style="width: 50px; height: 50px;">
+              <h5 class="mb-1"><%= album.title %></h5>
+            </div>
+          </a>
+
+          <div class="modal fade" id="albumModal-<%= album.id %>" tabindex="-1" aria-labelledby="albumModalLabel-<%= album.id %>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="albumModalLabel-<%= album.id %>"><%= album.title %></h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <ul class="list-group">
+                    <% album.photos.each do |photo| %>
+                      <li class="list-group-item">
+                        <img src="<%= photo.thumbnail_url %>" class="img-thumbnail me-3" alt="<%= photo.title %>" style="width: 100px; height: 100px;">
+                        <%= photo.title %>
+                      </li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true" data-controller="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= turbo_frame_tag dom_id(@user, :edit) do %>
+          <%= render 'form', user: @user %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

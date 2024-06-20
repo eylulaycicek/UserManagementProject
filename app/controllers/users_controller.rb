@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  include ActionView::RecordIdentifier
+
   def index
     if params[:search]
       @users = User.where('username LIKE ?', "%#{params[:search]}%")
@@ -7,22 +9,29 @@ class UsersController < ApplicationController
       @users = User.all
     end
   end
-
-  def show
-    @user = User.find(params[:id])
-    @albums = fetch_albums(@user.id)
-  end
-
+  
   def edit
     @user = User.find(params[:id])
+    @albums = @user.albums.includes(:photos)
   end
-
+  
   def update
     @user = User.find(params[:id])
     if @user.update(user_params)
-      redirect_to @user, notice: 'User was successfully updated.'
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace(dom_id(@user), partial: 'user', locals: { user: @user }),
+            turbo_stream.replace("flash", partial: 'layouts/flash', locals: { notice: 'User was successfully updated.' })
+          ]
+        end
+        format.html { redirect_to @user, notice: 'User was successfully updated.' }
+      end
     else
-      render :edit
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@user, :edit), partial: 'form', locals: { user: @user }) }
+        format.html { render :edit }
+      end
     end
   end
 
@@ -30,11 +39,5 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:name, :username, :email, :phone, :website)
-  end
-
-  def fetch_albums(user_id)
-    url = "https://jsonplaceholder.typicode.com/albums?userId=#{user_id}"
-    response = Net::HTTP.get(URI(url))
-    JSON.parse(response)
   end
 end
